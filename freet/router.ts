@@ -8,14 +8,14 @@ import * as util from './util';
 
 const router = express.Router();
 
-/**
- * Get all the freets
- *
- * @name GET /api/freets
- *
- * @return {FreetResponse[]} - A list of all the freets sorted in descending
- *                      order by date modified
- */
+// /**
+//  * Get all the freets
+//  *
+//  * @name GET /api/freets
+//  *
+//  * @return {FreetResponse[]} - A list of all the freets sorted in descending
+//  *                      order by date modified
+//  */
 /**
  * Get freets by author.
  *

@@ -148,7 +148,7 @@ router.delete(
         nest.members.splice(index, 1);
       }
     }
-
+    
     await UserCollection.deleteOne(userId);
     await NestCollection.deleteMany(userId);
     req.session.userId = undefined;

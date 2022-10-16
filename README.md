@@ -185,7 +185,7 @@ This renders the `index.html` file that will be used to interact with the backen
 
 **Returns**
 
-- An array of freets created by user with username `author`
+- An array of freets created by user with username `author` in descending order by date modified
 
 **Throws**
 
