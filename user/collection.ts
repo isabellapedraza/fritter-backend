@@ -20,8 +20,8 @@ class UserCollection {
    */
   static async addOne(username: string, password: string): Promise<HydratedDocument<User>> {
     const dateJoined = new Date();
-
-    const user = new UserModel({username, password, dateJoined});
+    const friends: string[] = [];
+    const user = new UserModel({username, password, dateJoined, friends});
     await user.save(); // Saves user to MongoDB
     return user;
   }
