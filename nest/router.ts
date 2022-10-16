@@ -7,46 +7,38 @@ import * as util from './util';
 
 const router = express.Router();
 
-// /**
-//  * Get all the nests
-//  *
-//  * @name GET /api/nests
-//  *
-//  * @return {NestResponse[]} - A list of all the nests sorted in alphabetical order
-//  */
+/**
+ * Get nests by creator.
+ *
+ * @name GET /api/nests?creatorId=id
+ *
+ * @return {NestResponse[]} - An array of nests created by user with id, creatorId
+ * @throws {400} - If creatorId is not given
+ * @throws {404} - If no user has given creatorId
+ *
+ */
+router.get(
+  '/',
+  async (req: Request, res: Response, next: NextFunction) => {
+    // Check if creator query parameter was supplied
+    if (req.query.creator !== undefined) {
+      next();
+      return;
+    }
 
-// /**
-//  * Get nests by creator.
-//  *
-//  * @name GET /api/nests?creator=id
-//  *
-//  * @return {NestResponse[]} - An array of nests created by user with id, creatorId
-//  * @throws {400} - If creatorId is not given
-//  * @throws {404} - If no user has given creatorId
-//  *
-//  */
-// router.get(
-//   '/',
-//   async (req: Request, res: Response, next: NextFunction) => {
-//     // Check if creator query parameter was supplied
-//     if (req.query.creator !== undefined) {
-//       next();
-//       return;
-//     }
-
-//     const allNests = await NestCollection.findAll();
-//     const response = allNests.map(util.constructNestResponse);
-//     res.status(200).json(response);
-//   },
-//   [
-//     userValidator.isAuthorExists
-//   ],
-//   async (req: Request, res: Response) => {
-//     const creatorNests = await NestCollection.findAllByUsername(req.query.creator as string);
-//     const response = creatorNests.map(util.constructNestResponse);
-//     res.status(200).json(response);
-//   }
-// );
+    const allNests = await NestCollection.findAll();
+    const response = allNests.map(util.constructNestResponse);
+    res.status(200).json(response);
+  },
+  [
+    userValidator.isCreatorExists
+  ],
+  async (req: Request, res: Response) => {
+    const creatorNests = await NestCollection.findAllByUsername(req.query.creator as string);
+    const response = creatorNests.map(util.constructNestResponse);
+    res.status(200).json(response);
+  }
+);
 
 /**
  * Create a new nest.
