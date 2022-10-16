@@ -27,9 +27,9 @@ function createNest(fields) {
 //       .then(showResponse)
 //       .catch(showResponse);
 //   }
-  
-//   function deleteFreet(fields) {
-//     fetch(`/api/freets/${fields.id}`, {method: 'DELETE'})
-//       .then(showResponse)
-//       .catch(showResponse);
-//   }
+
+function deleteNest(fields) {
+  fetch(`/api/nests/${fields.id}`, {method: 'DELETE'})
+    .then(showResponse)
+    .catch(showResponse);
+}

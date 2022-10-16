@@ -39,7 +39,8 @@ const formsAndHandlers = {
   'edit-freet': editFreet,
   'delete-freet': deleteFreet,
   'create-nest': createNest,
-  'view-nests-by-creator': viewNestsByCreator
+  'view-nests-by-creator': viewNestsByCreator,
+  'delete-nest': deleteNest
 };
 
 // Attach handlers to forms

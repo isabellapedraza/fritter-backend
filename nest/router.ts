@@ -67,39 +67,33 @@ router.post(
   }
 );
 
-// /**
-//  * Delete a freet
-//  *
-//  * @name DELETE /api/freets/:id
-//  *
-//  * @return {string} - A success message
-//  * @throws {403} - If the user is not logged in or is not the author of
-//  *                 the freet
-//  * @throws {404} - If the freetId is not valid
-//  */
-// router.delete(
-//   '/:freetId?',
-//   [
-//     userValidator.isUserLoggedIn,
-//     freetValidator.isFreetExists,
-//     freetValidator.isValidFreetModifier
-//   ],
-//   async (req: Request, res: Response) => {
-//     const nests = await NestCollection.findAll();
-//     const freet = await FreetCollection.findOne(req.params.freetId);
-//     for (const nest of nests) { // Deletes post from all nests
-//       const index = nest.posts.indexOf(freet._id);
-//       if (index !== -1) {
-//         nest.posts.splice(index, 1);
-//       }
-//     }
+/**
+ * Delete a nest
+ *
+ * @name DELETE /api/nests/:id
+ *
+ * @return {string} - A success message
+ * @throws {403} - If the user is not logged in or is not the creator of
+ *                 the nest
+ * @throws {404} - If the nestId is not valid
+ */
+router.delete(
+  '/:nestId?',
+  [
+    userValidator.isUserLoggedIn,
+    nestValidator.isNestExists,
+    nestValidator.isValidNestModifier
+  ],
+  async (req: Request, res: Response) => {
+    const nests = await NestCollection.findAll();
+    const nest = await NestCollection.findOne(req.params.nestId);
 
-//     await FreetCollection.deleteOne(req.params.freetId);
-//     res.status(200).json({
-//       message: 'Your freet was deleted successfully.'
-//     });
-//   }
-// );
+    await NestCollection.deleteOne(req.params.nestId);
+    res.status(200).json({
+      message: 'Your nest was deleted successfully.'
+    });
+  }
+);
 
 // /**
 //  * Modify a freet
