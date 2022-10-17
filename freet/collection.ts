@@ -3,6 +3,7 @@ import type {Freet} from './model';
 import FreetModel from './model';
 import UserCollection from '../user/collection';
 import NestCollection from '../nest/collection';
+import e from 'express';
 
 /**
  * This files contains a class that has the functionality to explore freets
@@ -89,10 +90,12 @@ class FreetCollection {
     const nests = await NestCollection.findAll();
     const freetCheck = await FreetCollection.findOne(freetId);
     for (const nest of nests) { // Deletes post from all nests
-      const index = nest.posts.indexOf(freetCheck._id);
+      const {posts} = nest;
+      const index = posts.indexOf(freetCheck._id);
       console.log(index);
       if (index !== -1) {
-        nest.posts.splice(index, 1);
+        posts.splice(index, 1);
+        console.log(posts);
       }
     }
 

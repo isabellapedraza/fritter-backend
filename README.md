@@ -175,12 +175,6 @@ The following api routes have already been implemented for you (**Make sure to d
 
 This renders the `index.html` file that will be used to interact with the backend
 
-#### `GET /api/freets` - Get all the freets
-
-**Returns**
-
-- An array of all freets sorted in descending order by date modified
-
 #### `GET /api/freets?author=USERNAME` - Get freets by author
 
 **Returns**
@@ -313,3 +307,91 @@ This renders the `index.html` file that will be used to interact with the backen
 **Throws**
 
 - `403` if the user is not logged in
+
+
+
+
+
+
+
+
+#### `GET /api/nests?creator=USERNAME` - Get nests by creator
+
+**Returns**
+
+- An array of freets created by user with username `creator` in alphabetical order
+
+**Throws**
+
+- `400` if `creator` is not given
+- `404` if `creator` is not a recognized username of any user
+
+#### `POST /api/nests` - Create a new nest
+
+**Body**
+
+- `name` _{string}_ - The name of the nest
+
+**Returns**
+
+- A success message
+- A object with the created nest
+
+**Throws**
+
+- `403` if the user is not logged in
+- `400` If the nest name is empty or a stream of empty spaces
+- `413` If the nest name is more than 30 characters long
+
+#### `DELETE /api/nests/:nestId?` - Delete an existing nest
+
+**Returns**
+
+- A success message
+
+**Throws**
+
+- `403` if the user is not logged in
+- `403` if the user is not the creator of the nest
+- `404` if the nestId is invalid
+
+#### `PUT /api/nests/:nestId?/posts` - Update an existing nest's posts
+
+**Body**
+
+- `freetId` _{string}_ - The freet to be modified
+- `operation` _{string}_ - Whether to add or remove 
+
+**Returns**
+
+- A success message
+- An object with the updated nest
+
+**Throws**
+
+- `403` if the user is not logged in
+- `404` if the freetId is invalid
+- `403` if the user is not the creator of the nest
+- `404` if the nestId is invalid
+
+#### `PUT /api/nests/:nestId?/members` - Update an existing nest's members
+
+**Body**
+
+- `memberId` _{string}_ - The member to be modified
+- `operation` _{string}_ - Whether to add or remove 
+
+**Returns**
+
+- A success message
+- An object with the updated nest
+
+**Throws**
+
+- `403` if the user is not logged in
+- `403` if the user is not the creator of the nest
+- `404` if the nestId is invalid
+
+<!-- Remember to add memberId valid check-->
+
+RESTful API outline:

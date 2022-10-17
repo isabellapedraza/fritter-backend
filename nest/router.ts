@@ -107,13 +107,15 @@ router.delete(
  * @throws {403} - if the user is not logged in or not the creator of
  *                 of the nest
  * @throws {404} - If the nest is not valid
+ * @throws {404} - If the freetId is not valid
  */
 router.put(
   '/:nestId?/posts',
   [
     userValidator.isUserLoggedIn,
     nestValidator.isNestExists,
-    nestValidator.isValidNestModifier
+    nestValidator.isValidNestModifier,
+    freetValidator.isFreetExists
   ],
   async (req: Request, res: Response) => {
     const nest = await NestCollection.updateOne(req.params.nestId, undefined, req.body.freetId, req.body.operation);
