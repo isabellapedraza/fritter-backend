@@ -387,23 +387,147 @@ This renders the `index.html` file that will be used to interact with the backen
 
 <!-- Remember to add memberId valid check-->
 
-RESTful API outline:
+#### `GET /api/times/:groupId?` - Get a time by group
 
-Times:
+**Returns**
 
-- GET /api/times/:groupId?            Get a time by group
-- POST /api/times                     Create a time 
-- PUT /api/times/:groupId?/start      Edit a start time 
-- PUT /api/times/:groupId?/end        Edit a end time
-- DELETE /api/times/:timeId?          Delete a time 
+- The start and end time of a group 
 
-FriendRequests:
+**Throws**
 
-- GET /api/friend/:recipientId?       Get a users pending friend requests
-- GET /api/friend/:requesterId?       Get a users sent friend requests
-- GET /api/friend/:friendId?/mutuals  Get the mutual friends of two users
-- GET /api/friend/:friendId?/suggested Get the suggested friends of two users
-- GET /api/friend/:requesterId?       Get a users sent friend requests
-- POST /api/friend                    Create a friend request
-- PUT /api/friend/:friendId?          Accept/reject a friend request
-- DELETE /api/friend/:friendId?       Delete a friend request
+- `403` if the user is not logged in
+- `403` if the user is not the creator of the group
+- `404` if the groupId is invalid
+
+#### `POST /api/times` - Create a time
+
+**Body**
+
+- `groupId` _{string}_ - The group whose time you want to set
+- `startTime` _{Date}_ - The start time of the group 
+- `endTime` _{Date}_ - The end time of the group 
+
+**Returns**
+
+- A success message 
+- An object with the newly created time
+
+**Throws**
+
+- `403` if the user is not logged in
+- `404` if the groupId is invalid
+- `409` if the startTime is not valid 
+- `409` if the endTime is not valid 
+
+#### `POST /api/times/:timeId?/start` - Edit a start time
+
+**Body**
+
+- `timeId` _{string}_ - The id of the time you want to edit 
+- `startTime` _{Date}_ - The new start time 
+
+**Returns**
+
+- A success message 
+- An object with the updated time
+
+**Throws**
+
+- `403` if the user is not logged in
+- `403` if the user is not the creator of the time
+- `404` if the timeId is invalid
+- `409` if the startTime is not valid 
+
+#### `POST /api/times/:timeId?/end` - Edit an end time
+
+**Body**
+
+- `timeId` _{string}_ - The id of the time you want to edit 
+- `endTime` _{Date}_ - The new end time 
+
+**Returns**
+
+- A success message 
+- An object with the updated time
+
+**Throws**
+
+- `403` if the user is not logged in
+- `403` if the user is not the creator of the time
+- `404` if the timeId is invalid
+- `409` if the endTime is not valid 
+
+#### `DELETE /api/times/:timeId?` - Delete a time
+
+**Body**
+
+- `timeId` _{string}_ - The id of the time you want to edit 
+
+**Returns**
+
+- A success message 
+
+**Throws**
+
+- `403` if the user is not logged in
+- `403` if the user is not the creator of the time
+- `404` if the timeId is invalid
+
+#### `GET /api/friend/:userId?` - Get a user's friends
+
+**Returns**
+
+- A success message 
+- An array of all a user's friends 
+
+**Throws**
+
+- `403` if the user is not logged in
+- `403` if the user is not the owner of their friends 
+- `404` if the userId is invalid
+
+#### `POST /api/friend` - Create a friend
+
+**Body**
+
+- `recipientId` _{string}_ - The id of the user you want to friend
+
+**Returns**
+
+- A success message 
+- An object representing the newly created friend 
+
+**Throws**
+
+- `403` if the user is not logged in
+- `404` if the recipientId is invalid
+
+#### `DELETE /api/friend/:userId?` - Delete all the friendships of a user 
+
+**Body**
+
+- `userId` _{string}_ - The id of the user whose friendships you want to delete 
+
+**Returns**
+
+- A success message 
+
+**Throws**
+
+- `403` if the user is not logged in
+- `404` if the userId is invalid
+
+#### `DELETE /api/friend/:friendId?` - Delete a friend
+
+**Body**
+
+- `friendId` _{string}_ - The id of the friendship you want to delete 
+
+**Returns**
+
+- A success message 
+
+**Throws**
+
+- `403` if the user is not logged in
+- `404` if the friendId is invalid
