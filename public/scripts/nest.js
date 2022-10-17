@@ -28,6 +28,12 @@ function editNestPosts(fields) {
     .catch(showResponse);
 }
 
+function editNestMembers(fields) {
+  fetch(`/api/nests/${fields.id}/members`, {method: 'PUT', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
+    .then(showResponse)
+    .catch(showResponse);
+}
+
 function deleteNest(fields) {
   fetch(`/api/nests/${fields.id}`, {method: 'DELETE'})
     .then(showResponse)
