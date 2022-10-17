@@ -3,6 +3,7 @@ import express from 'express';
 import NestCollection from '../nest/collection';
 import * as userValidator from '../user/middleware';
 import * as nestValidator from '../nest/middleware';
+import * as freetValidator from '../freet/middleware';
 import * as util from './util';
 
 const router = express.Router();
@@ -91,6 +92,34 @@ router.delete(
     await NestCollection.deleteOne(req.params.nestId);
     res.status(200).json({
       message: 'Your nest was deleted successfully.'
+    });
+  }
+);
+
+/**
+ * Modify a nest's posts
+ *
+ * @name PUT /api/nests/:id/posts
+ *
+ * @param {string} freetId - the postId to add/remove
+ * @param {string} operation - whether to add or remove
+ * @return {NestResponse} - the updated nest
+ * @throws {403} - if the user is not logged in or not the creator of
+ *                 of the nest
+ * @throws {404} - If the nest is not valid
+ */
+router.put(
+  '/:nestId?/posts',
+  [
+    userValidator.isUserLoggedIn,
+    nestValidator.isNestExists,
+    nestValidator.isValidNestModifier
+  ],
+  async (req: Request, res: Response) => {
+    const nest = await NestCollection.updateOne(req.params.nestId, undefined, req.body.freetId, req.body.operation);
+    res.status(200).json({
+      message: 'Your nest was updated successfully.',
+      nest: util.constructNestResponse(nest)
     });
   }
 );

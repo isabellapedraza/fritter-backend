@@ -2,6 +2,7 @@ import type {HydratedDocument, PopulatedDoc, Types} from 'mongoose';
 import type {Nest} from './model';
 import NestModel from './model';
 import UserCollection from '../user/collection';
+import FreetCollection from '../freet/collection';
 
 /**
  * This files contains a class that has the functionality to explore nests
@@ -67,30 +68,36 @@ class NestCollection {
    *
    * @param {string} nestId - The id of the nest to be updated
    * @param {string} memberId - The id of the member to be updated
-   * @param {string} postId - The id of the member to be updated
-   * @param {boolean} add - Whether to add or remove
+   * @param {string} freetId - The id of the member to be updated
+   * @param {boolean} operation - Whether to add or remove
    * @return {Promise<HydratedDocument<Nest>>} - The newly updated nest
    */
-  static async updateOne(nestId: Types.ObjectId | string, memberId: Types.ObjectId | undefined, postId: Types.ObjectId | undefined, add: boolean): Promise<HydratedDocument<Nest>> {
+  static async updateOne(nestId: Types.ObjectId | string, memberId: string | undefined, freetId: string | undefined, operation: string): Promise<HydratedDocument<Nest>> {
+    const check = 'add';
+    const add = check === operation.toLowerCase();
     const nest = await NestModel.findOne({_id: nestId});
     if (add) {
       if (memberId !== undefined) {
-        nest.members.push(memberId);
+        const user = await UserCollection.findOneByUserId(memberId);
+        nest.members.push(user._id);
       }
 
-      if (postId !== undefined) {
-        nest.posts.push(postId);
+      if (freetId !== undefined) {
+        const post = await FreetCollection.findOne(freetId);
+        nest.posts.push(post._id);
       }
     } else {
       if (memberId !== undefined) {
-        const index = nest.members.indexOf(memberId);
+        const user = await UserCollection.findOneByUserId(memberId);
+        const index = nest.members.indexOf(user._id);
         if (index !== -1) {
           nest.members.splice(index, 1);
         }
       }
 
-      if (postId !== undefined) {
-        const index = nest.posts.indexOf(postId);
+      if (freetId !== undefined) {
+        const post = await FreetCollection.findOne(freetId);
+        const index = nest.posts.indexOf(post._id);
         if (index !== -1) {
           nest.posts.splice(index, 1);
         }

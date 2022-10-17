@@ -95,15 +95,6 @@ router.delete(
     freetValidator.isValidFreetModifier
   ],
   async (req: Request, res: Response) => {
-    const nests = await NestCollection.findAll();
-    const freet = await FreetCollection.findOne(req.params.freetId);
-    for (const nest of nests) { // Deletes post from all nests
-      const index = nest.posts.indexOf(freet._id);
-      if (index !== -1) {
-        nest.posts.splice(index, 1);
-      }
-    }
-
     await FreetCollection.deleteOne(req.params.freetId);
     res.status(200).json({
       message: 'Your freet was deleted successfully.'

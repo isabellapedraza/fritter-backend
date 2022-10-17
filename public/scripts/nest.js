@@ -21,12 +21,12 @@ function createNest(fields) {
     .then(showResponse)
     .catch(showResponse);
 }
-  
-//   function editFreet(fields) {
-//     fetch(`/api/freets/${fields.id}`, {method: 'PUT', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
-//       .then(showResponse)
-//       .catch(showResponse);
-//   }
+
+function editNestPosts(fields) {
+  fetch(`/api/nests/${fields.id}/posts`, {method: 'PUT', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
+    .then(showResponse)
+    .catch(showResponse);
+}
 
 function deleteNest(fields) {
   fetch(`/api/nests/${fields.id}`, {method: 'DELETE'})

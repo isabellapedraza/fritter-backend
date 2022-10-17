@@ -2,6 +2,7 @@ import type {HydratedDocument, Types} from 'mongoose';
 import type {Freet} from './model';
 import FreetModel from './model';
 import UserCollection from '../user/collection';
+import NestCollection from '../nest/collection';
 
 /**
  * This files contains a class that has the functionality to explore freets
@@ -85,6 +86,16 @@ class FreetCollection {
    * @return {Promise<Boolean>} - true if the freet has been deleted, false otherwise
    */
   static async deleteOne(freetId: Types.ObjectId | string): Promise<boolean> {
+    const nests = await NestCollection.findAll();
+    const freetCheck = await FreetCollection.findOne(freetId);
+    for (const nest of nests) { // Deletes post from all nests
+      const index = nest.posts.indexOf(freetCheck._id);
+      console.log(index);
+      if (index !== -1) {
+        nest.posts.splice(index, 1);
+      }
+    }
+
     const freet = await FreetModel.deleteOne({_id: freetId});
     return freet !== null;
   }
