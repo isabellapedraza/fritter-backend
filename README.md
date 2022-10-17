@@ -308,13 +308,6 @@ This renders the `index.html` file that will be used to interact with the backen
 
 - `403` if the user is not logged in
 
-
-
-
-
-
-
-
 #### `GET /api/nests?creator=USERNAME` - Get nests by creator
 
 **Returns**
@@ -395,3 +388,22 @@ This renders the `index.html` file that will be used to interact with the backen
 <!-- Remember to add memberId valid check-->
 
 RESTful API outline:
+
+Times:
+
+- GET /api/times/:groupId?            Get a time by group
+- POST /api/times                     Create a time 
+- PUT /api/times/:groupId?/start      Edit a start time 
+- PUT /api/times/:groupId?/end        Edit a end time
+- DELETE /api/times/:timeId?          Delete a time 
+
+FriendRequests:
+
+- GET /api/friend/:recipientId?       Get a users pending friend requests
+- GET /api/friend/:requesterId?       Get a users sent friend requests
+- GET /api/friend/:friendId?/mutuals  Get the mutual friends of two users
+- GET /api/friend/:friendId?/suggested Get the suggested friends of two users
+- GET /api/friend/:requesterId?       Get a users sent friend requests
+- POST /api/friend                    Create a friend request
+- PUT /api/friend/:friendId?          Accept/reject a friend request
+- DELETE /api/friend/:friendId?       Delete a friend request
