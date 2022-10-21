@@ -141,14 +141,6 @@ router.delete(
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
     await FreetCollection.deleteMany(userId);
-    const nests = await NestCollection.findAll();
-    for (const nest of nests) { // Deletes member from all nests
-      const index = nest.members.indexOf(req.session.userId);
-      if (index !== -1) {
-        nest.members.splice(index, 1);
-      }
-    }
-    
     await UserCollection.deleteOne(userId);
     await NestCollection.deleteMany(userId);
     req.session.userId = undefined;

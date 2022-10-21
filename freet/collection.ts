@@ -88,15 +88,9 @@ class FreetCollection {
    */
   static async deleteOne(freetId: Types.ObjectId | string): Promise<boolean> {
     const nests = await NestCollection.findAll();
-    const freetCheck = await FreetCollection.findOne(freetId);
     for (const nest of nests) { // Deletes post from all nests
-      const {posts} = nest;
-      const index = posts.indexOf(freetCheck._id);
-      console.log(index);
-      if (index !== -1) {
-        posts.splice(index, 1);
-        console.log(posts);
-      }
+      const nestId = nest._id;
+      await NestCollection.updateOne(nestId, undefined, freetId.toString(), 'remove');
     }
 
     const freet = await FreetModel.deleteOne({_id: freetId});

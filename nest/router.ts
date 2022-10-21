@@ -114,8 +114,8 @@ router.put(
   [
     userValidator.isUserLoggedIn,
     nestValidator.isNestExists,
-    nestValidator.isValidNestModifier,
-    freetValidator.isFreetExists
+    nestValidator.isValidNestModifier
+    // freetValidator.isFreetExists
   ],
   async (req: Request, res: Response) => {
     const nest = await NestCollection.updateOne(req.params.nestId, undefined, req.body.freetId, req.body.operation);

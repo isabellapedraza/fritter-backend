@@ -1,6 +1,7 @@
 import type {HydratedDocument, Types} from 'mongoose';
 import type {User} from './model';
 import UserModel from './model';
+import NestCollection from '../nest/collection';
 
 /**
  * This file contains a class with functionality to interact with users stored
@@ -88,6 +89,12 @@ class UserCollection {
    * @return {Promise<Boolean>} - true if the user has been deleted, false otherwise
    */
   static async deleteOne(userId: Types.ObjectId | string): Promise<boolean> {
+    const nests = await NestCollection.findAll();
+    for (const nest of nests) { // Deletes post from all nests
+      const nestId = nest._id;
+      await NestCollection.updateOne(nestId, userId.toString(), undefined, 'remove');
+    }
+
     const user = await UserModel.deleteOne({_id: userId});
     return user !== null;
   }
