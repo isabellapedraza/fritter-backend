@@ -47,7 +47,7 @@ router.get(
  * @name POST /api/nests
  *
  * @param {string} name - The name of the nest
- * @return {FreetResponse} - The created nest
+ * @return {NestResponse} - The created nest
  * @throws {403} - If the user is not logged in
  * @throws {400} - If the nest name is empty or a stream of empty spaces
  * @throws {413} - If the nest name is more than 30 characters long

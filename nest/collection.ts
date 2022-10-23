@@ -3,6 +3,7 @@ import type {Nest} from './model';
 import NestModel from './model';
 import UserCollection from '../user/collection';
 import FreetCollection from '../freet/collection';
+import TimeCollection from '../time/collection';
 
 /**
  * This files contains a class that has the functionality to explore nests

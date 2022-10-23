@@ -42,8 +42,12 @@ const formsAndHandlers = {
   'view-nests-by-creator': viewNestsByCreator,
   'delete-nest': deleteNest,
   'edit-nest-posts': editNestPosts,
-  'edit-nest-members': editNestMembers
-
+  'edit-nest-members': editNestMembers,
+  'create-time': createTime,
+  'view-times-by-creator': viewTimesByCreator,
+  'delete-time': deleteTime,
+  'edit-time-startTime': editTimeStartTime,
+  'edit-time-endTime': editTimeEndTime
 };
 
 // Attach handlers to forms

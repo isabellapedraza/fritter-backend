@@ -8,6 +8,7 @@
   <script src="/scripts/freet.js"></script>
   <script src="/scripts/user.js"></script>
   <script src="/scripts/nest.js"></script>
+  <script src="/scripts/time.js"></script>
   <script src="/scripts/index.js"></script>
 </head>
 
@@ -179,6 +180,67 @@
           </div>
           <input type="submit" value="Edit Nest Members">
         </form>
+
+        <form id="create-time">
+          <h3>Create Time</h3>
+          <div>
+            <label for="groupId">Group Id:</label>
+            <input id="groupId" name="groupId">
+          </div>
+          <div>
+            <label for="startTime">Choose a start time for your group:</label>
+            <input type="time" id="startTime" name="startTime" min="00:00" max="24:00" required>
+          </div>
+          <div>
+            <label for="endTime">Choose an end time for your group:</label>
+            <input type="time" id="endTime" name="endTime" min="00:00" max="24:00" required>
+          </div>
+          <input type="submit" value="Create Time">
+        </form>
+
+        <form id="view-times-by-creator">
+          <h3>View Times By Creator</h3>
+          <div>
+            <label for="creator">Creator:</label>
+            <input id="creator" name="creator">
+          </div>
+          <input type="submit" value="View Times By Creator">
+        </form>
+
+        <form id="delete-time">
+          <h3>Delete Time</h3>
+          <div>
+            <label for="id">ID:</label>
+            <input id="id" name="id">
+          </div>
+          <input type="submit" value="Delete Time">
+        </form>
+
+        <form id="edit-time-startTime">
+          <h3>Edit Time Start Time</h3>
+          <div>
+            <label for="id">ID:</label>
+            <input id="id" name="id">
+          </div>
+          <div>
+            <label for="startTime">New start time:</label>
+            <input type="time" id="startTime" name="startTime" min="00:00" max="24:00" required>
+          </div>
+          <input type="submit" value="Edit Time Start Time">
+        </form>
+
+        <form id="edit-time-endTime">
+          <h3>Edit Time End Time</h3>
+          <div>
+            <label for="id">ID:</label>
+            <input id="id" name="id">
+          </div>
+          <div>
+            <label for="endTime">New end time:</label>
+            <input type="time" id="endTime" name="endTime" min="00:00" max="24:00" required>
+          </div>
+          <input type="submit" value="Edit Time End Time">
+        </form> 
 
       </div>
     </section>

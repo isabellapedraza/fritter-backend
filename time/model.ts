@@ -21,8 +21,8 @@ export type PopulatedTime = {
   _id: Types.ObjectId; // MongoDB assigns each object this ID on creation
   creatorId: User;
   groupId: Nest;
-  startTime: Date;
-  endTime: Date;
+  startTime: string;
+  endTime: string;
 };
 
 // Mongoose schema definition for interfacing with a MongoDB table
@@ -39,7 +39,8 @@ const TimeSchema = new Schema<Time>({
   // The group the time is for
   groupId: {
     type: Schema.Types.ObjectId,
-    required: true
+    required: true,
+    ref: 'Nest'
   },
   // The start time of the time
   startTime: {
