@@ -47,7 +47,10 @@ const formsAndHandlers = {
   'view-times-by-creator': viewTimesByCreator,
   'delete-time': deleteTime,
   'edit-time-startTime': editTimeStartTime,
-  'edit-time-endTime': editTimeEndTime
+  'edit-time-endTime': editTimeEndTime,
+  'view-friends-by-user': viewFriendsByUser,
+  'add-friend': addFriend,
+  'remove-friend': removeFriend
 };
 
 // Attach handlers to forms

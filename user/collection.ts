@@ -2,6 +2,7 @@ import type {HydratedDocument, Types} from 'mongoose';
 import type {User} from './model';
 import UserModel from './model';
 import NestCollection from '../nest/collection';
+import FriendCollection from '../friend/collection';
 
 /**
  * This file contains a class with functionality to interact with users stored
@@ -24,6 +25,7 @@ class UserCollection {
     const friends: string[] = [];
     const user = new UserModel({username, password, dateJoined, friends});
     await user.save(); // Saves user to MongoDB
+    await FriendCollection.addOne(user._id, []); // Makes a friend entry immediately when a user is created
     return user;
   }
 
@@ -93,6 +95,11 @@ class UserCollection {
     for (const nest of nests) { // Deletes post from all nests
       const nestId = nest._id;
       await NestCollection.updateOne(nestId, userId.toString(), undefined, 'remove');
+    }
+
+    const users = await UserModel.find({});
+    for (const user of users) {
+      await FriendCollection.updateOne(userId, user.username,'remove');
     }
 
     const user = await UserModel.deleteOne({_id: userId});

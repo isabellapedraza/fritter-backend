@@ -175,6 +175,28 @@ const isCreatorExists = async (req: Request, res: Response, next: NextFunction) 
   next();
 };
 
+/**
+ * Checks if a user with userId as creator id in req.query exists
+ */
+const isUserExists = async (req: Request, res: Response, next: NextFunction) => {
+  if (!req.query.user) {
+    res.status(400).json({
+      error: 'Provided user username must be nonempty.'
+    });
+    return;
+  }
+
+  const user = await UserCollection.findOneByUsername(req.query.user as string);
+  if (!user) {
+    res.status(404).json({
+      error: `A user with username ${req.query.user as string} does not exist.`
+    });
+    return;
+  }
+
+  next();
+};
+
 export {
   isCurrentSessionUserExists,
   isUserLoggedIn,
@@ -183,6 +205,7 @@ export {
   isAccountExists,
   isAuthorExists,
   isCreatorExists,
+  isUserExists,
   isValidUsername,
   isValidPassword
 };

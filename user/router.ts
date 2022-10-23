@@ -4,6 +4,7 @@ import FreetCollection from '../freet/collection';
 import NestCollection from '../nest/collection';
 import UserCollection from './collection';
 import TimeCollection from '../time/collection';
+import FriendCollection from '../friend/collection';
 import * as userValidator from '../user/middleware';
 import * as util from './util';
 
@@ -142,9 +143,10 @@ router.delete(
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
     await FreetCollection.deleteMany(userId);
-    await UserCollection.deleteOne(userId);
     await NestCollection.deleteMany(userId);
     await TimeCollection.deleteMany(userId);
+    await FriendCollection.deleteMany(userId);
+    await UserCollection.deleteOne(userId);
     req.session.userId = undefined;
     res.status(200).json({
       message: 'Your account has been deleted successfully.'
