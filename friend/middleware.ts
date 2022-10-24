@@ -16,7 +16,7 @@ const isAlreadyFriends = async (req: Request, res: Response, next: NextFunction)
   const friends = await FriendCollection.findAllByUsername(req.body.recipient);
   const isFriends = friends[0].friends.includes(req.session.userId);
   if (isFriends) {
-    res.status(404).json({
+    res.status(409).json({
       error: {
         alreadyFriends: `You are already friends with ${req.body.recipient as string}.`
       }

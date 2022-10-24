@@ -49,6 +49,7 @@ router.get(
  * @param {string} user - the user you want to see your mutual friends with
  * @return {Types.ObjectId[]} - The mutual friends
  * @throws {403} - If the user is not logged in
+ * @throws {404} - If the user is not valid
  */
 router.get(
   '/mutual:user?',
@@ -71,6 +72,7 @@ router.get(
  * @param {string} user - the user you want to see your mutual friends with
  * @return {Types.ObjectId[]} - The suggested friends
  * @throws {403} - If the user is not logged in
+ * @throws {404} - If the user is not valid
  */
 router.get(
   '/suggested:user?',
@@ -94,6 +96,9 @@ router.get(
  * @param {string} recipient - the user you want to add as a friend
  * @return {FriendResponse} - The created friend
  * @throws {403} - If the user is not logged in
+ * @throws {400} - If the recipient id is empty
+ * @throws {404} - If the recipient id is invalid
+ * @throws {409} - If the user is already friends with recipient
  */
 router.post(
   '/',

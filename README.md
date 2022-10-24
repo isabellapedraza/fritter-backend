@@ -318,6 +318,33 @@ This renders the `index.html` file that will be used to interact with the backen
 
 - `400` if `creator` is not given
 - `404` if `creator` is not a recognized username of any user
+- `403` if `creator` is not the current user's username (i.e., a user tries to see another's user's nests)
+
+#### `GET /api/nests/:nestId?/members` - Get the members of a nest
+
+**Returns**
+
+- An array of the members in nest with id `nestId`
+
+**Throws**
+
+- `400` if `nestId` is not given
+- `404` if `nestId` is not a recognized nest
+- `403` if the user is not logged in 
+- `403` if the user that is logged in is not the nest's creator (i.e., a user tries to see another's user's nest's members)
+
+#### `GET /api/nests/:nestId?/posts` - Get the posts of a nest
+
+**Returns**
+
+- An array of the posts in nest with id `nestId`
+
+**Throws**
+
+- `400` if `nestId` is not given
+- `404` if `nestId` is not a recognized nest
+- `403` if the user is not logged in 
+- `403` if the user that is logged in is not the nest's creator and is not a member of the nest
 
 #### `POST /api/nests` - Create a new nest
 
@@ -366,6 +393,7 @@ This renders the `index.html` file that will be used to interact with the backen
 - `404` if the freetId is invalid
 - `403` if the user is not the creator of the nest
 - `404` if the nestId is invalid
+- `404` if the freetId is invalid
 
 #### `PUT /api/nests/:nestId?/members` - Update an existing nest's members
 
@@ -384,8 +412,17 @@ This renders the `index.html` file that will be used to interact with the backen
 - `403` if the user is not logged in
 - `403` if the user is not the creator of the nest
 - `404` if the nestId is invalid
+- `404` if the memberId is invalid
 
-<!-- Remember to add memberId valid check-->
+#### `GET /api/times/:creatorId=USERNAME` - Get a time by creator
+
+**Returns**
+
+- The times that a creator has made
+
+**Throws**
+
+- `403` if the user is not logged in
 
 #### `GET /api/times/:groupId?` - Get a time by group
 
@@ -396,8 +433,6 @@ This renders the `index.html` file that will be used to interact with the backen
 **Throws**
 
 - `403` if the user is not logged in
-- `403` if the user is not the creator of the group
-- `404` if the groupId is invalid
 
 #### `POST /api/times` - Create a time
 
@@ -415,9 +450,6 @@ This renders the `index.html` file that will be used to interact with the backen
 **Throws**
 
 - `403` if the user is not logged in
-- `404` if the groupId is invalid
-- `409` if the startTime is not valid 
-- `409` if the endTime is not valid 
 
 #### `POST /api/times/:timeId?/start` - Edit a start time
 
@@ -436,7 +468,6 @@ This renders the `index.html` file that will be used to interact with the backen
 - `403` if the user is not logged in
 - `403` if the user is not the creator of the time
 - `404` if the timeId is invalid
-- `409` if the startTime is not valid 
 
 #### `POST /api/times/:timeId?/end` - Edit an end time
 
@@ -455,7 +486,6 @@ This renders the `index.html` file that will be used to interact with the backen
 - `403` if the user is not logged in
 - `403` if the user is not the creator of the time
 - `404` if the timeId is invalid
-- `409` if the endTime is not valid 
 
 #### `DELETE /api/times/:timeId?` - Delete a time
 
@@ -473,7 +503,7 @@ This renders the `index.html` file that will be used to interact with the backen
 - `403` if the user is not the creator of the time
 - `404` if the timeId is invalid
 
-#### `GET /api/friend/:userId?` - Get a user's friends
+#### `GET /api/friends/:userId=USERNAME` - Get a user's friends
 
 **Returns**
 
@@ -483,14 +513,37 @@ This renders the `index.html` file that will be used to interact with the backen
 **Throws**
 
 - `403` if the user is not logged in
-- `403` if the user is not the owner of their friends 
 - `404` if the userId is invalid
 
-#### `POST /api/friend` - Create a friend
+#### `GET /api/friends/mutual/:user=USERNAME` - Get a user's mutual friends 
+
+**Returns**
+
+- A success message 
+- An array of all a user's mutual friends with user `user`
+
+**Throws**
+
+- `403` if the user is not logged in
+- `404` if the userId is invalid
+
+#### `GET /api/friends/mutual/:user=USERNAME` - Get a user's suggested friends 
+
+**Returns**
+
+- A success message 
+- An array of all a user's suggested friends with user `user`
+
+**Throws**
+
+- `403` if the user is not logged in
+- `404` if the userId is invalid
+
+#### `POST /api/friends` - Add a friend
 
 **Body**
 
-- `recipientId` _{string}_ - The id of the user you want to friend
+- `recipient` _{string}_ - The username of the user you want to friend
 
 **Returns**
 
@@ -501,12 +554,14 @@ This renders the `index.html` file that will be used to interact with the backen
 
 - `403` if the user is not logged in
 - `404` if the recipientId is invalid
+- `400` if the recipientId is not given
+- `409` if the user is already friends with recipient
 
-#### `DELETE /api/friend/:userId?` - Delete all the friendships of a user 
+#### `DELETE /api/friends` - Remove a friend
 
 **Body**
 
-- `userId` _{string}_ - The id of the user whose friendships you want to delete 
+- `recipient` _{string}_ - The username of the user you want to unfriend
 
 **Returns**
 
@@ -515,19 +570,5 @@ This renders the `index.html` file that will be used to interact with the backen
 **Throws**
 
 - `403` if the user is not logged in
-- `404` if the userId is invalid
-
-#### `DELETE /api/friend/:friendId?` - Delete a friend
-
-**Body**
-
-- `friendId` _{string}_ - The id of the friendship you want to delete 
-
-**Returns**
-
-- A success message 
-
-**Throws**
-
-- `403` if the user is not logged in
-- `404` if the friendId is invalid
+- `404` if the recipientId is invalid
+- `400` if the recipientId is not given

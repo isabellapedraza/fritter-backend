@@ -51,6 +51,7 @@ router.get(
  * @name GET /api/nests/:nestId?/members
  *
  * @return {Types.ObjectId[]} - An array of the ids of the members in a nest
+ * @throws {400} - If nestId is not given
  * @throws {403} - If the user is not logged in or is not the creator of
  *                 the nest
  * @throws {404} - If the nestId is not valid
@@ -88,7 +89,7 @@ router.get(
  *
  * @return {Types.ObjectId[]} - An array of the ids of the posts in a nest
  * @throws {403} - If the user is not logged in or is not the creator of
- *                 the nest
+ *                 the nest or member of the nest
  * @throws {404} - If the nestId is not valid
  *
  */
