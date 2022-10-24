@@ -197,6 +197,48 @@ const isUserExists = async (req: Request, res: Response, next: NextFunction) => 
   next();
 };
 
+/**
+ * Checks if a user with memberId is req.body exists
+ */
+const isUserValid = async (req: Request, res: Response, next: NextFunction) => {
+  const validFormat = Types.ObjectId.isValid(req.body.memberId);
+  const user = validFormat ? await UserCollection.findOneByUserId(req.body.memberId) : '';
+  if (!user) {
+    res.status(404).json({
+      error: {
+        userNotFound: `User with user ID ${req.body.memberId as string} does not exist.`
+      }
+    });
+    return;
+  }
+
+  next();
+};
+
+/**
+ * Checks if a user with recipientId is req.body exists
+ */
+const isUserRecipientExists = async (req: Request, res: Response, next: NextFunction) => {
+  if (!req.body.recipient) {
+    res.status(400).json({
+      error: 'Provided recipient username must be nonempty.'
+    });
+    return;
+  }
+
+  const user = await UserCollection.findOneByUsername(req.body.recipient);
+  if (!user) {
+    res.status(404).json({
+      error: {
+        userNotFound: `User with user ID ${req.body.recipient as string} does not exist.`
+      }
+    });
+    return;
+  }
+
+  next();
+};
+
 export {
   isCurrentSessionUserExists,
   isUserLoggedIn,
@@ -207,5 +249,7 @@ export {
   isCreatorExists,
   isUserExists,
   isValidUsername,
-  isValidPassword
+  isValidPassword,
+  isUserValid,
+  isUserRecipientExists
 };

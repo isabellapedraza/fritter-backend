@@ -2,6 +2,7 @@ import type {NextFunction, Request, Response} from 'express';
 import express from 'express';
 import FriendCollection from '../friend/collection';
 import * as userValidator from '../user/middleware';
+import * as friendValidator from '../friend/middleware';
 import * as util from './util';
 
 const router = express.Router();
@@ -30,12 +31,57 @@ router.get(
     res.status(200).json(response);
   },
   [
+    userValidator.isUserLoggedIn,
     userValidator.isUserExists
   ],
   async (req: Request, res: Response) => {
     const userFriends = await FriendCollection.findAllByUsername(req.query.user as string);
     const response = userFriends.map(util.constructFriendResponse);
     res.status(200).json(response);
+  }
+);
+
+/**
+ * Get the mutual friends of a user
+ *
+ * @name GET /api/friends/mutual:user?
+ *
+ * @param {string} user - the user you want to see your mutual friends with
+ * @return {Types.ObjectId[]} - The mutual friends
+ * @throws {403} - If the user is not logged in
+ */
+router.get(
+  '/mutual:user?',
+  [
+    userValidator.isUserLoggedIn,
+    userValidator.isUserExists
+  ],
+  async (req: Request, res: Response) => {
+    const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
+    const mutuals = await FriendCollection.findMutualFriends(userId, req.query.user as string);
+    res.status(201).json({mutuals});
+  }
+);
+
+/**
+ * Get the suggested friends of a user
+ *
+ * @name GET /api/friends/suggested:user?
+ *
+ * @param {string} user - the user you want to see your mutual friends with
+ * @return {Types.ObjectId[]} - The suggested friends
+ * @throws {403} - If the user is not logged in
+ */
+router.get(
+  '/suggested:user?',
+  [
+    userValidator.isUserLoggedIn,
+    userValidator.isUserExists
+  ],
+  async (req: Request, res: Response) => {
+    const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
+    const suggested = await FriendCollection.findSuggestedFriends(userId, req.query.user as string);
+    res.status(201).json({suggested});
   }
 );
 
@@ -52,7 +98,9 @@ router.get(
 router.post(
   '/',
   [
-    userValidator.isUserLoggedIn
+    userValidator.isUserLoggedIn,
+    userValidator.isUserRecipientExists,
+    friendValidator.isAlreadyFriends
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
@@ -77,7 +125,8 @@ router.post(
 router.delete(
   '/',
   [
-    userValidator.isUserLoggedIn
+    userValidator.isUserLoggedIn,
+    userValidator.isUserRecipientExists
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn

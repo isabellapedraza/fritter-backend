@@ -1,6 +1,7 @@
 import type {Request, Response, NextFunction} from 'express';
 import {Types} from 'mongoose';
 import NestCollection from '../nest/collection';
+import UserCollection from '../user/collection';
 
 /**
  * Checks if a nest with nestId is req.params exists
@@ -59,8 +60,58 @@ const isValidNestModifier = async (req: Request, res: Response, next: NextFuncti
   next();
 };
 
+/**
+ * Checks if the current user is the creator of the nest
+ */
+const isValidNestMemberViewer = async (req: Request, res: Response, next: NextFunction) => {
+  const nest = await NestCollection.findOne(req.params.nestId);
+  const userId = nest.creatorId._id;
+  if (req.session.userId !== userId.toString()) {
+    res.status(403).json({
+      error: 'Cannot view other users\' nest\' members.'
+    });
+    return;
+  }
+
+  next();
+};
+
+/**
+ * Checks if the current user is a member or creator of the nest
+ */
+const isValidNestPostViewer = async (req: Request, res: Response, next: NextFunction) => {
+  const nest = await NestCollection.findOne(req.params.nestId);
+  const userId = nest.creatorId._id;
+  if (req.session.userId !== userId.toString() && !nest.members.includes(req.session.userId)) {
+    res.status(403).json({
+      error: 'Cannot view other users\' nests\' posts if you aren\'t a member or the creator.'
+    });
+    return;
+  }
+
+  next();
+};
+
+/**
+ * Checks if the current user is asking to see their own nests
+ */
+const isValidNestViewer = async (req: Request, res: Response, next: NextFunction) => {
+  const user = await UserCollection.findOneByUsername(req.query.creator as string);
+  if (req.session.userId !== user._id.toString()) {
+    res.status(403).json({
+      error: 'Cannot view other users\' nests\' if you aren\'t the creator.'
+    });
+    return;
+  }
+
+  next();
+};
+
 export {
   isValidNestName,
   isNestExists,
-  isValidNestModifier
+  isValidNestModifier,
+  isValidNestMemberViewer,
+  isValidNestPostViewer,
+  isValidNestViewer
 };

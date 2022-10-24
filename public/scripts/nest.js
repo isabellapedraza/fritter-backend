@@ -16,6 +16,18 @@ function viewNestsByCreator(fields) {
     .catch(showResponse);
 }
 
+function viewNestMembers(fields) {
+  fetch(`/api/nests/${fields.id}/members`)
+    .then(showResponse)
+    .catch(showResponse);
+}
+
+function viewNestPosts(fields) {
+  fetch(`/api/nests/${fields.id}/posts`)
+    .then(showResponse)
+    .catch(showResponse);
+}
+
 function createNest(fields) {
   fetch('/api/nests', {method: 'POST', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
     .then(showResponse)

@@ -28,6 +28,7 @@ class NestCollection {
       members,
       posts
     });
+
     await nest.save(); // Saves nest to MongoDB
     return nest.populate('creatorId');
   }

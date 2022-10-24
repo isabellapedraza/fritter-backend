@@ -17,6 +17,12 @@ function viewTimesByCreator(fields) {
     .catch(showResponse);
 }
 
+function viewTimesByGroup(fields) {
+  fetch(`/api/times?group=${fields.group}`)
+    .then(showResponse)
+    .catch(showResponse);
+}
+
 function deleteTime(fields) {
   fetch(`/api/times/${fields.id}`, {method: 'DELETE'})
     .then(showResponse)

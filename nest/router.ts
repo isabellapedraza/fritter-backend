@@ -1,10 +1,12 @@
 import type {NextFunction, Request, Response} from 'express';
 import express from 'express';
 import NestCollection from '../nest/collection';
+import TimeCollection from '../time/collection';
 import * as userValidator from '../user/middleware';
 import * as nestValidator from '../nest/middleware';
 import * as freetValidator from '../freet/middleware';
 import * as util from './util';
+import { Types } from 'mongoose';
 
 const router = express.Router();
 
@@ -16,6 +18,7 @@ const router = express.Router();
  * @return {NestResponse[]} - An array of nests created by user with id, creatorId
  * @throws {400} - If creatorId is not given
  * @throws {404} - If no user has given creatorId
+ * @throws {403} - If the user is trying to see someone else's nests
  *
  */
 router.get(
@@ -32,11 +35,84 @@ router.get(
     res.status(200).json(response);
   },
   [
-    userValidator.isCreatorExists
+    userValidator.isCreatorExists,
+    nestValidator.isValidNestViewer
   ],
   async (req: Request, res: Response) => {
     const creatorNests = await NestCollection.findAllByUsername(req.query.creator as string);
     const response = creatorNests.map(util.constructNestResponse);
+    res.status(200).json(response);
+  }
+);
+
+/**
+ * Get a nest's members.
+ *
+ * @name GET /api/nests/:nestId?/members
+ *
+ * @return {Types.ObjectId[]} - An array of the ids of the members in a nest
+ * @throws {403} - If the user is not logged in or is not the creator of
+ *                 the nest
+ * @throws {404} - If the nestId is not valid
+ *
+ */
+router.get(
+  '/:nestId?/members',
+  async (req: Request, res: Response, next: NextFunction) => {
+    // Check if nestId parameter was supplied
+    if (req.params.nestId !== undefined) {
+      next();
+      return;
+    }
+
+    const allNests = await NestCollection.findAll();
+    const response = allNests.map(util.constructNestResponse);
+    res.status(200).json(response);
+  },
+  [
+    userValidator.isUserLoggedIn,
+    nestValidator.isNestExists,
+    nestValidator.isValidNestMemberViewer
+  ],
+  async (req: Request, res: Response) => {
+    const nest = await NestCollection.findOne(req.params.nestId);
+    const response = nest.members;
+    res.status(200).json(response);
+  }
+);
+
+/**
+ * Get a nest's posts.
+ *
+ * @name GET /api/nests/:nestId?/posts
+ *
+ * @return {Types.ObjectId[]} - An array of the ids of the posts in a nest
+ * @throws {403} - If the user is not logged in or is not the creator of
+ *                 the nest
+ * @throws {404} - If the nestId is not valid
+ *
+ */
+router.get(
+  '/:nestId?/posts',
+  async (req: Request, res: Response, next: NextFunction) => {
+    // Check if nestId parameter was supplied
+    if (req.params.nestId !== undefined) {
+      next();
+      return;
+    }
+
+    const allNests = await NestCollection.findAll();
+    const response = allNests.map(util.constructNestResponse);
+    res.status(200).json(response);
+  },
+  [
+    userValidator.isUserLoggedIn,
+    nestValidator.isNestExists,
+    nestValidator.isValidNestPostViewer
+  ],
+  async (req: Request, res: Response) => {
+    const nest = await NestCollection.findOne(req.params.nestId);
+    const response = nest.posts;
     res.status(200).json(response);
   }
 );
@@ -89,6 +165,11 @@ router.delete(
     const nests = await NestCollection.findAll();
     const nest = await NestCollection.findOne(req.params.nestId);
 
+    const times = await TimeCollection.findAllByGroup(req.params.nestId);
+    for (const time of times) {
+      await TimeCollection.deleteOne(time._id);
+    }
+
     await NestCollection.deleteOne(req.params.nestId);
     res.status(200).json({
       message: 'Your nest was deleted successfully.'
@@ -114,8 +195,8 @@ router.put(
   [
     userValidator.isUserLoggedIn,
     nestValidator.isNestExists,
-    nestValidator.isValidNestModifier
-    // freetValidator.isFreetExists
+    nestValidator.isValidNestModifier,
+    freetValidator.isFreetValid
   ],
   async (req: Request, res: Response) => {
     const nest = await NestCollection.updateOne(req.params.nestId, undefined, req.body.freetId, req.body.operation);
@@ -137,11 +218,13 @@ router.put(
  * @throws {403} - if the user is not logged in or not the creator of
  *                 of the nest
  * @throws {404} - If the nest is not valid
+ * @throws {404} - If the member is not valid
  */
 router.put(
   '/:nestId?/members',
   [
     userValidator.isUserLoggedIn,
+    userValidator.isUserValid,
     nestValidator.isNestExists,
     nestValidator.isValidNestModifier
   ],

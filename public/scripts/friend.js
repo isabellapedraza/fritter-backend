@@ -11,6 +11,18 @@ function viewFriendsByUser(fields) {
     .catch(showResponse);
 }
 
+function viewMutualFriends(fields) {
+  fetch(`/api/friends/mutual?user=${fields.user}`)
+    .then(showResponse)
+    .catch(showResponse);
+}
+
+function viewSuggestedFriends(fields) {
+  fetch(`/api/friends/suggested?user=${fields.user}`)
+    .then(showResponse)
+    .catch(showResponse);
+}
+
 function addFriend(fields) {
   fetch('/api/friends', {method: 'POST', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
     .then(showResponse)

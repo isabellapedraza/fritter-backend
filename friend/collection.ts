@@ -43,12 +43,13 @@ class FriendCollection {
    * Get all the mutual friends between two users
    *
    * @param {string} userA - The id of the first user
-   * @param {string} userB - The id of the second user
+   * @param {string} username - The username of the second user
    * @return {Promise<Types.ObjectId[]>} - An array of all of their mutual friends
    */
-  static async findMutualFriends(userA: Types.ObjectId | string, userB: Types.ObjectId | string): Promise<Types.ObjectId[]> {
+  static async findMutualFriends(userA: Types.ObjectId | string, username: string): Promise<Types.ObjectId[]> {
+    const userB = await UserCollection.findOneByUsername(username);
     const friendA = await FriendModel.findOne({user: userA});
-    const friendB = await FriendModel.findOne({user: userB});
+    const friendB = await FriendModel.findOne({user: userB._id});
 
     const mutuals = [];
 
@@ -68,9 +69,10 @@ class FriendCollection {
    * @param {string} userB - The id of the second user
    * @return {Promise<Types.ObjectId[]>} - An array of all of their suggested friends
    */
-  static async findSuggestedFriends(userA: Types.ObjectId | string, userB: Types.ObjectId | string): Promise<Types.ObjectId[]> {
+  static async findSuggestedFriends(userA: Types.ObjectId | string, username: string): Promise<Types.ObjectId[]> {
+    const userB = await UserCollection.findOneByUsername(username);
     const friendA = await FriendModel.findOne({user: userA});
-    const friendB = await FriendModel.findOne({user: userB});
+    const friendB = await FriendModel.findOne({user: userB._id});
 
     const suggested = [];
 

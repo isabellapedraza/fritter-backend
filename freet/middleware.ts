@@ -21,6 +21,24 @@ const isFreetExists = async (req: Request, res: Response, next: NextFunction) =>
 };
 
 /**
+ * Checks if a freet with freetId is req.body exists
+ */
+const isFreetValid = async (req: Request, res: Response, next: NextFunction) => {
+  const validFormat = Types.ObjectId.isValid(req.body.freetId);
+  const freet = validFormat ? await FreetCollection.findOne(req.body.freetId) : '';
+  if (!freet) {
+    res.status(404).json({
+      error: {
+        freetNotFound: `Freet with freet ID ${req.body.freetId as string} does not exist.`
+      }
+    });
+    return;
+  }
+
+  next();
+};
+
+/**
  * Checks if the content of the freet in req.body is valid, i.e not a stream of empty
  * spaces and not more than 140 characters
  */
@@ -62,5 +80,6 @@ const isValidFreetModifier = async (req: Request, res: Response, next: NextFunct
 export {
   isValidFreetContent,
   isFreetExists,
-  isValidFreetModifier
+  isValidFreetModifier,
+  isFreetValid
 };

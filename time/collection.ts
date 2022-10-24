@@ -56,6 +56,18 @@ class TimeCollection {
   }
 
   /**
+   * Get all the times in by given groupId
+   *
+   * @param {string} groupId - The groupId of group in time
+   * @return {Promise<HydratedDocument<Time>[]>} - An array of all of the times
+   */
+  static async findAllByGroup(groupId: string): Promise<Array<HydratedDocument<Time>>> {
+    // Retrieves times
+    const group = await NestCollection.findOne(groupId);
+    return TimeModel.find({groupId: group._id}).populate(['creatorId', 'groupId']);
+  }
+
+  /**
    * Get all the times in the database
    *
    * @return {Promise<HydratedDocument<Time>[]>} - An array of all of the times

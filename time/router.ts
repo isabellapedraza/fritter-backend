@@ -42,6 +42,39 @@ router.get(
 );
 
 /**
+ * Get times by group.
+ *
+ * @name GET /api/times?groupId=id
+ *
+ * @return {TimeResponse[]} - An array of times with group, groupId
+ * @throws {400} - If groupId is not given
+ * @throws {404} - If no user has given groupId
+ *
+ */
+router.get(
+  '/',
+  async (req: Request, res: Response, next: NextFunction) => {
+    // Check if group query parameter was supplied
+    if (req.query.group !== undefined) {
+      next();
+      return;
+    }
+
+    const allTimes = await TimeCollection.findAll();
+    const response = allTimes.map(util.constructTimeResponse);
+    res.status(200).json(response);
+  },
+  [
+    userValidator.isUserLoggedIn
+  ],
+  async (req: Request, res: Response) => {
+    const groupTimes = await TimeCollection.findAllByGroup(req.query.group as string);
+    const response = groupTimes.map(util.constructTimeResponse);
+    res.status(200).json(response);
+  }
+);
+
+/**
  * Create a new time.
  *
  * @name POST /api/times
